@@ -1,0 +1,45 @@
+# Compiled Python files
+__pycache__/
+
+# Python egg metadata
+*.egg-info/
+
+data/
+# Virtual environment
+venv/
+env/
+machine-failure/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Local configuration file (replace with your actual local config file)
+config.yaml
+
+# Ignore compiled files
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore coverage files
+htmlcov/
+.coverage
+.coverage.*
+
+# Ignore dist and build directories
+dist/
+build/
+
+# Ignore distribution packages
+*.egg
+
+# Ignore system-specific files
+*.DS_Store
+Thumbs.db
