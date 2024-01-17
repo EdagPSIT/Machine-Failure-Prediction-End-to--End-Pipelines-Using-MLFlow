@@ -1,6 +1,7 @@
 from machinefailure.features.processing import DataPreprocessing
 from machinefailure.features.transformation import DataTransformation
 from machinefailure.models.train import ModelTraining
+from machinefailure.models.evaluate import ModelEvaluation
 from machinefailure.config.core import ConfigManager
 from machinefailure import logger
 
@@ -43,11 +44,22 @@ class TrainPipeline:
             logger.error('There is error at model training stage.',e)
             raise e
 
+    def model_evaluation_stage(self):
+        try:
+            logger.info('Model Evaluation stage started')
+            configmanger=ConfigManager() 
+            eval_config = configmanger.evaluation_config()
+            ModelEvaluation(eval_config)
+            logger.info('Model Evaluation stage completed sucessfuly')
+        except Exception as e:
+            logger.error('There is error at model training stage.',e)
+            raise e
 
     def run_train_pipe(self):
         self.data_processing_stage()
         self.data_transformation_stage()
         self.model_training_stage()
+        self.model_evaluation_stage()
 
 
 

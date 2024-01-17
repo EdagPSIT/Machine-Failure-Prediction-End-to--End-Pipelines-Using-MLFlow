@@ -7,11 +7,14 @@ import mlflow.sklearn
 import numpy as np
 import joblib
 from pathlib import Path
-from machinefailure.config.core import ModelEvaluationConfig
+from machinefailure import logger
+from machinefailure.config.core import ModelEvaluationConfig,DATASET_DIR,METRIC_FILE_DIR,TRAINED_MODEL_DIR
+from machinefailure.utils.helper_function import save_json
 
 class ModelEvaluation:
     def __init__(self, config: ModelEvaluationConfig):
         self.config = config
+        self.log_into_mlflow()
 
     
     def eval_metrics(self,actual, pred):
@@ -23,8 +26,8 @@ class ModelEvaluation:
 
     def log_into_mlflow(self):
 
-        test_df = pd.read_csv(self.config.test_data_path)
-        model = joblib.load(self.config.model_path)
+        test_df = pd.read_csv(Path(f"{DATASET_DIR}/{self.config.test_data_path}"))
+        model = joblib.load(Path(f"{TRAINED_MODEL_DIR}/{self.config.model_path}"))
 
         X_test = test_df.drop([self.config.target_var], axis=1)
         y_test = test_df[[self.config.target_var]]
@@ -36,19 +39,20 @@ class ModelEvaluation:
 
         with mlflow.start_run():
 
-            predicted_qualities = model.predict(test_x)
+            predicted_qualities = model.predict(X_test)
 
-            (rmse, mae, r2) = self.eval_metrics(test_y, predicted_qualities)
+            (precision,recall,roc_auc) = self.eval_metrics(y_test, predicted_qualities)
             
             # Saving metrics as local
-            scores = {"rmse": rmse, "mae": mae, "r2": r2}
-            save_json(path=Path(self.config.metric_file_name), data=scores)
+            scores = {"precision": precision, "recall": recall, "roc_auc": roc_auc}
+            save_json(path=Path(f"{METRIC_FILE_DIR}/{self.config.metric_file_name}"), data=scores)
 
             mlflow.log_params(self.config.all_params)
 
-            mlflow.log_metric("rmse", rmse)
-            mlflow.log_metric("r2", r2)
-            mlflow.log_metric("mae", mae)
+            mlflow.log_metric("precision", precision)
+            mlflow.log_metric("recall", recall)
+            mlflow.log_metric("roc_auc", roc_auc)
+            logger.info('Metrics for this experiments logged to mlflow.')
 
 
             # Model registry does not work with file store
@@ -58,8 +62,6 @@ class ModelEvaluation:
                 # There are other ways to use the Model Registry, which depends on the use case,
                 # please refer to the doc for more information:
                 # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-                mlflow.sklearn.log_model(model, "model", registered_model_name="ElasticnetModel")
+                mlflow.sklearn.log_model(model, "model", registered_model_name="Logistic Regression")
             else:
                 mlflow.sklearn.log_model(model, "model")
-
-    

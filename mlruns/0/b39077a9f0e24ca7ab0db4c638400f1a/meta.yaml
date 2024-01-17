@@ -1,0 +1,15 @@
+artifact_uri: file:///home/ramesh/Desktop/ML%20Projects/Machine%20Failure%20Prediction/mlruns/0/b39077a9f0e24ca7ab0db4c638400f1a/artifacts
+end_time: 1705483830660
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b39077a9f0e24ca7ab0db4c638400f1a
+run_name: unleashed-squid-928
+run_uuid: b39077a9f0e24ca7ab0db4c638400f1a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1705483826526
+status: 3
+tags: []
+user_id: ramesh

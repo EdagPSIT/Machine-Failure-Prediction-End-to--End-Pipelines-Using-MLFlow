@@ -43,6 +43,7 @@ class ModelEvaluationConfig(BaseModel):
     metric_file_name: str
     target_var: str
     all_params: Dict
+    mlflow_uri: str
 
 class ConfigManager:
     def __init__(
@@ -100,6 +101,7 @@ class ConfigManager:
             model_path=config.model_path,
             metric_file_name=config.metric_file_name,
             target_var=config.target_var,
-            all_params=params
+            all_params=params,
+            mlflow_uri=config.mlflow_uri
         )
         return evaluation_config
