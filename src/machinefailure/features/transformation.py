@@ -12,11 +12,15 @@ import joblib
 
 
 class DataTransformation:
+    """Class for data transformation operations."""
+
     def __init__(self,config=DataTransformationConfig) -> None:
+        """Initialize DataTransformation with the given configuration."""
         self.config = config
         self.feature_transformation()
     
     def feature_transformation(self):
+        """Perform feature transformation using defined pipelines."""
 
         num_pipeline = Pipeline([
             ('Imputer',SimpleImputer(strategy='median')),

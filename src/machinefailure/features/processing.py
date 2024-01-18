@@ -17,7 +17,7 @@ class DataPreprocessing:
             self.df.columns = [col.replace(" ","_") for col in self.df.columns]
             logger.info('raw dataset loaded succesfuly into df.')
         except Exception as e:
-            logger.error('Error occured while reading raw data into df.',e)
+            logger.error('Error occurred while reading raw data into df: %s', e)
             raise e
         
     def drop_features(self):
@@ -25,7 +25,7 @@ class DataPreprocessing:
             self.df.drop(self.config.features_to_drop,axis=1, inplace=True)
             logger.info('Features dropped successfuly from df and dataframe updated.')
         except Exception as e:
-            logger.error('Error occured while dropping features from df.',e)
+            logger.error('Error occurred while dropping features from df: %s', e)
             raise e
     
     def split_save_df(self):
@@ -39,7 +39,8 @@ class DataPreprocessing:
             logger.info('The dataset split into train and test, saved to processed directory.')
         
         except Exception as e:
-            logger.error('Error occured while spliting the df into train and test')
+            logger.error('Error occurred while splitting the df into train and test: %s', e)
+            raise e
         
     def main_processing(self):
         self.load_dataset()

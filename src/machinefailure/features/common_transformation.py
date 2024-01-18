@@ -4,7 +4,7 @@ import numpy as np
 
 # Log transformer class to tranform the numerical variables
 class LogTransformer(BaseEstimator, TransformerMixin):
-    ""Logarithmic transformer for numerical variables."""
+    """Logarithmic transformer for numerical variables."""
     
     def __init__(self):
         """Initialize the LogTransformer."""

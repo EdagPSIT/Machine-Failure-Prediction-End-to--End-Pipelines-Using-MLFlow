@@ -1,0 +1,33 @@
+data_processing:
+  raw_data_path: raw/machine-failure.csv
+  train_data_path: processed/train.csv
+  test_data_path: processed/test.csv
+  features_to_drop:
+    - id
+    - Product_ID
+
+data_transformation:
+  train_data_path: processed/train.csv
+  log_transform_vars:
+    - Rotational_speed_[rpm]
+  scale_vars:
+    - Air_temperature_[K]
+    - Process_temperature_[K]
+    - Rotational_speed_[rpm]
+    - Torque_[Nm]
+    - Tool_wear_[min]
+  cat_vars:
+    - Type
+
+
+model_trainer:
+  train_data_path: processed/train.csv
+  save_model_name: machine_failure_model_v0.0.1.joblib
+  target_var: Machine_failure
+
+model_evaluation:
+  test_data_path: processed/test.csv
+  model_path: machine_failure_model_v0.0.1.joblib
+  metric_file_name: metrics.json
+  target_var: Machine_failure
+  mlflow_uri: https://dagshub.com/EdagPSIT/Machine-Failure-Prediction-End-to--End-Pipelines-Using-MLFlow.mlflow

@@ -12,12 +12,18 @@ from machinefailure.config.core import ModelEvaluationConfig,DATASET_DIR,METRIC_
 from machinefailure.utils.helper_function import save_json
 
 class ModelEvaluation:
+
+    """Class for evaluating machine learning models."""
+
     def __init__(self, config: ModelEvaluationConfig):
+
+        """Initialize ModelEvaluation with the given configuration."""
         self.config = config
         self.log_into_mlflow()
 
     
     def eval_metrics(self,actual, pred):
+        """Calculate evaluation metrics for the model."""
         precision = precision_score(actual, pred)
         recall = recall_score(actual, pred)
         roc_auc = roc_auc_score(actual, pred)
@@ -25,9 +31,19 @@ class ModelEvaluation:
 
 
     def log_into_mlflow(self):
-
+        """Log evaluation metrics and model to MLflow."""
+        logger.info('Experiment logging started')
+        
         test_df = pd.read_csv(Path(f"{DATASET_DIR}/{self.config.test_data_path}"))
-        model = joblib.load(Path(f"{TRAINED_MODEL_DIR}/{self.config.model_path}"))
+
+        model_path = Path(TRAINED_MODEL_DIR, self.config.model_path)
+        if model_path.exists():
+            model = joblib.load(model_path)
+        else:
+            logger.error('Model file not found error at models directory')
+            raise FileNotFoundError(f"Model file not found: {model_path}")
+
+        # model = joblib.load(Path(f"{TRAINED_MODEL_DIR}/{self.config.model_path}"))
 
         X_test = test_df.drop([self.config.target_var], axis=1)
         y_test = test_df[[self.config.target_var]]
@@ -35,7 +51,7 @@ class ModelEvaluation:
 
         mlflow.set_registry_uri(self.config.mlflow_uri)
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
-
+        print(mlflow.set_registry_uri(self.config.mlflow_uri))
 
         with mlflow.start_run():
 
@@ -65,3 +81,4 @@ class ModelEvaluation:
                 mlflow.sklearn.log_model(model, "model", registered_model_name="Logistic Regression")
             else:
                 mlflow.sklearn.log_model(model, "model")
+            logger.info('Experiment logging completed.')

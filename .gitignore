@@ -21,7 +21,7 @@ machine-failure/
 *.log
 
 # Local configuration file (replace with your actual local config file)
-config.yaml
+# config.yaml
 
 # Ignore compiled files
 *.pyc
