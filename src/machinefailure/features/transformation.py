@@ -5,7 +5,7 @@ from sklearn.compose import ColumnTransformer
 from imblearn.pipeline import Pipeline as ImbPipeline
 from sklearn.preprocessing import MinMaxScaler,OneHotEncoder
 from imblearn.over_sampling import SMOTE
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from machinefailure.features.common_transformation import LogTransformer
 import joblib
 
@@ -42,13 +42,12 @@ class DataTransformation:
             ('Log Transformation',num_log_transformer,self.config.log_transform_vars)
         ])
 
-        log_reg = LogisticRegression()
+        model = RandomForestClassifier()
 
         failure_pipeline = ImbPipeline([
             ('Preprocessor',preprocessor),
             ('smote', SMOTE(sampling_strategy='minority', random_state=42)), # SMOTE for oversampling minority classes
-            ('Logistic Regression',log_reg)
+            ('model',model)
         ])
-
         # saving pipeline
         return failure_pipeline

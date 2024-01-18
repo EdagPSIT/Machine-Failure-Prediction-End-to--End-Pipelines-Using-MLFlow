@@ -29,13 +29,12 @@ class DataTransformationConfig(BaseModel):
     log_transform_vars: List[str]
     scale_vars: List[str]
     cat_vars: List[str]
-
-
+    
 class ModelTrainerConfig(BaseModel):
     train_data_path: Path
     save_model_name: str
     target_var: str
-
+    params_grid: Dict
 
 class ModelEvaluationConfig(BaseModel):
     test_data_path: Path
@@ -84,11 +83,13 @@ class ConfigManager:
     
     def trainer_config(self) -> ModelTrainerConfig:
         config = self.config.model_trainer
+        params = self.params.random_forest
 
         trainer_config = ModelTrainerConfig(
             train_data_path=config.train_data_path,
             save_model_name=config.save_model_name,
-            target_var=config.target_var
+            target_var=config.target_var,
+            params_grid = params.param_grid
         )
         return trainer_config
     
