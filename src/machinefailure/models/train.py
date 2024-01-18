@@ -3,6 +3,7 @@ from pathlib import Path
 import joblib
 from machinefailure import logger
 from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV
 from machinefailure.config.core import ModelTrainerConfig,ConfigManager,DATASET_DIR,TRAINED_MODEL_DIR
 from machinefailure.features.transformation import DataTransformation
 
@@ -15,14 +16,22 @@ class ModelTraining:
 
     def train_model(self):
         try:
+            logger.info('Hyperparameters tuning started.')
             train_df = pd.read_csv(Path(f"{DATASET_DIR}/{self.config.train_data_path}"))
             X_train = train_df.drop(self.config.target_var, axis=1)
             y_train = train_df[self.config.target_var]
             
-            self.pipe_object.fit(X_train, y_train)
+            # hyperparameter tuning
+            grid_search = GridSearchCV(estimator=self.pipe_object, 
+                                       param_grid = self.config.params_grid, 
+                                       cv=5, 
+                                       scoring='f1_score', 
+                                       n_jobs=-1)
+
+            grid_search.fit(X_train, y_train)
 
             # Save model to models directory
-            joblib.dump(self.pipe_object, filename=f"{TRAINED_MODEL_DIR}/{self.config.save_model_name}")
+            joblib.dump(grid_search, filename=f"{TRAINED_MODEL_DIR}/{self.config.save_model_name}")
 
             logger.info('Model trained on train data and saved at models directory')
 
